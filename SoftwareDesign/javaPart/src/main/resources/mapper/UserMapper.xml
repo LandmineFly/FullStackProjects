@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.UserMapper">
+
+    <select id="isDuplicate" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE usr = #{usr}
+    </select>
+
+    <select id="countAllWithCondition" resultType="int">
+        SELECT COUNT(*) FROM user
+        <where>
+            <if test="searchBy.usr != null ">
+                AND usr LIKE CONCAT('%',#{searchBy.usr},'%')
+            </if>
+            <if test="searchBy.isAdmin != null">
+                AND is_admin = #{searchBy.isAdmin}
+            </if>
+        </where>
+    </select>
+
+    <select id="adminCount" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE is_admin = 1;
+    </select>
+
+    <insert id="insert">
+        INSERT INTO user
+            (usr, pwd, is_admin)
+        VALUES (#{usr}, #{pwd}, #{isAdmin})
+    </insert>
+
+    <select id="login" resultType="User">
+        SELECT is_admin
+        FROM user
+        WHERE usr = #{usr}
+          AND pwd = #{pwd}
+    </select>
+
+    <update id="updateByUsr">
+        UPDATE user AS u1
+        JOIN (SELECT id FROM user WHERE usr = #{oldUser.usr}) AS u2
+        ON u1.id = u2.id
+
+        SET u1.is_admin = #{newUser.isAdmin}
+        <if test="newUser.usr != null">
+            ,u1.usr = #{newUser.usr}
+        </if>
+        <if test="newUser.pwd != null">
+            ,u1.pwd = #{newUser.pwd}
+        </if>;
+    </update>
+
+    <delete id="deleteByUsr">
+        DELETE u1
+        FROM (user AS u1
+            JOIN (SELECT id FROM user WHERE usr = #{usr}) AS u2
+              ON u1.id = u2.id);
+    </delete>
+
+    <select id="select" resultType="User">
+        SELECT usr, is_admin FROM user
+        <where>
+            <if test="searchBy.usr != null ">
+                AND usr LIKE CONCAT('%',#{searchBy.usr},'%')
+            </if>
+            <if test="searchBy.isAdmin != null">
+                AND is_admin = #{searchBy.isAdmin}
+            </if>
+        </where>
+        <if test="sortBy != null">
+            ORDER BY ${sortBy.key} ${sortBy.order}
+        </if>
+        <if test="itemsPerPage != -1">
+            LIMIT #{itemsPerPage} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="isLogin" resultType="int">
+        SELECT is_login
+        FROM user
+        WHERE usr = #{usr}
+    </select>
+
+    <update id="setLogin">
+        UPDATE user
+        SET is_login = 1
+        WHERE usr = #{usr}
+    </update>
+
+    <update id="setLogout">
+        UPDATE user
+        SET is_login = 0
+        WHERE usr = #{usr}
+    </update>
+</mapper>

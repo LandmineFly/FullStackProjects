@@ -1,0 +1,104 @@
+# IntelliJ IDEA specific
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Java build directories
+# Maven / Gradle / Ant build directories
+target/
+build/
+out/
+
+# Dependency directories
+/.mvn/
+.gradle/
+
+# Java bytecode
+*.class
+
+# Logs
+*.log
+
+# JetBrains specific
+*.swp
+# Temporary files
+*.bak
+*.tmp
+
+# IntelliJ IDEA project files (specific)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+
+# Eclipse project files (if applicable)
+.project
+.classpath
+.settings/
+
+# OS-specific files
+# Windows
+Thumbs.db
+Desktop.ini
+# macOS
+.DS_Store
+# Linux
+.directory
+
+# Maven wrapper
+.mvn/wrapper/
+
+# SSM specific files (if applicable)
+*.log
+*.db
+*.sqlite3
+*.h2.db
+
+# Files related to testing
+/coverage/
+*.test/
+*.scoverage
+*.gcov
+
+# IDE-specific configuration (VSCode, PyCharm, etc.)
+.vscode/
+
+# Node.js related files (Vue, React, etc.)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Vue.js specific build directories
+/dist
+/build
+/.nuxt
+
+# Coverage reports
+/coverage/
+
+# Jupyter Notebooks (optional if used)
+.ipynb_checkpoints/
+
+# Python Bytecode files (optional if you use Python in your project)
+__pycache__/
+*.py[cod]
+
+# macOS Finder metadata
+.DS_Store
+
+# Windows Installer files
+Thumbs.db
+
+# PyCharm specific files (optional)
+.idea/
+
+# Anaconda environments (optional, if you use Python/Anaconda)
+env/
+venv/
+*.conda/
+*.env/
+
+# Spring Boot specific files (optional)
+*.h2.db

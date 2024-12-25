@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.StationViewAllMapper">
+
+    <select id="countAllWithCondition" resultType="int">
+        SELECT COUNT(*) FROM station_view_all
+        <where>
+            <if test="searchBy.编码 != null &amp; searchBy.编码 != ''">
+                AND 编码 LIKE CONCAT('%',#{searchBy.编码},'%')
+            </if>
+            <if test="searchBy.站名 != null &amp; searchBy.站名 != ''">
+                AND 站名 LIKE CONCAT('%',#{searchBy.站名},'%')
+            </if>
+            <if test="searchBy.管理机构 != null &amp; searchBy.管理机构 != ''">
+                AND 管理机构 LIKE CONCAT('%',#{searchBy.管理机构},'%')
+            </if>
+            <if test="searchBy.东经 != null &amp; searchBy.东经 != ''">
+                AND 东经 LIKE CONCAT('%',#{searchBy.东经},'%')
+            </if>
+            <if test="searchBy.北纬 != null &amp; searchBy.北纬 != ''">
+                AND 北纬 LIKE CONCAT('%',#{searchBy.北纬},'%')
+            </if>
+            <if test="searchBy.流域水系 != null &amp; searchBy.流域水系 != ''">
+                AND 流域水系 LIKE CONCAT('%',#{searchBy.流域水系},'%')
+            </if>
+            <if test="searchBy.河流名称 != null &amp; searchBy.河流名称 != ''">
+                AND 河流名称 LIKE CONCAT('%',#{searchBy.河流名称},'%')
+            </if>
+            <if test="searchBy.基础水文 != null &amp; searchBy.基础水文 != ''">
+                AND 基础水文 LIKE CONCAT('%',#{searchBy.基础水文},'%')
+            </if>
+            <if test="searchBy.降水蒸发 != null &amp; searchBy.降水蒸发 != ''">
+                AND 降水蒸发 LIKE CONCAT('%',#{searchBy.降水蒸发},'%')
+            </if>
+            <if test="searchBy.实时雨水情 != null &amp; searchBy.实时雨水情 != ''">
+                AND 实时雨水情 LIKE CONCAT('%',#{searchBy.实时雨水情},'%')
+            </if>
+            <if test="searchBy.水质 != null &amp; searchBy.水质 != ''">
+                AND 水质 LIKE CONCAT('%',#{searchBy.水质},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="select" resultType="stationViewAll">
+        SELECT * FROM station_view_all
+        <where>
+            <if test="searchBy.编码 != null &amp; searchBy.编码 != ''">
+                AND 编码 LIKE CONCAT('%',#{searchBy.编码},'%')
+            </if>
+            <if test="searchBy.站名 != null &amp; searchBy.站名 != ''">
+                AND 站名 LIKE CONCAT('%',#{searchBy.站名},'%')
+            </if>
+            <if test="searchBy.管理机构 != null &amp; searchBy.管理机构 != ''">
+                AND 管理机构 LIKE CONCAT('%',#{searchBy.管理机构},'%')
+            </if>
+            <if test="searchBy.东经 != null &amp; searchBy.东经 != ''">
+                AND 东经 LIKE CONCAT('%',#{searchBy.东经},'%')
+            </if>
+            <if test="searchBy.北纬 != null &amp; searchBy.北纬 != ''">
+                AND 北纬 LIKE CONCAT('%',#{searchBy.北纬},'%')
+            </if>
+            <if test="searchBy.流域水系 != null &amp; searchBy.流域水系 != ''">
+                AND 流域水系 LIKE CONCAT('%',#{searchBy.流域水系},'%')
+            </if>
+            <if test="searchBy.河流名称 != null &amp; searchBy.河流名称 != ''">
+                AND 河流名称 LIKE CONCAT('%',#{searchBy.河流名称},'%')
+            </if>
+            <if test="searchBy.基础水文 != null &amp; searchBy.基础水文 != ''">
+                AND 基础水文 LIKE CONCAT('%',#{searchBy.基础水文},'%')
+            </if>
+            <if test="searchBy.降水蒸发 != null &amp; searchBy.降水蒸发 != ''">
+                AND 降水蒸发 LIKE CONCAT('%',#{searchBy.降水蒸发},'%')
+            </if>
+            <if test="searchBy.实时雨水情 != null &amp; searchBy.实时雨水情 != ''">
+                AND 实时雨水情 LIKE CONCAT('%',#{searchBy.实时雨水情},'%')
+            </if>
+            <if test="searchBy.水质 != null &amp; searchBy.水质 != ''">
+                AND 水质 LIKE CONCAT('%',#{searchBy.水质},'%')
+            </if>
+        </where>
+        <if test="sortBy != null">
+            ORDER BY ${sortBy.key} ${sortBy.order}
+        </if>
+        <if test="itemsPerPage != -1">
+            LIMIT #{itemsPerPage} OFFSET #{offset}
+        </if>
+
+    </select>
+
+    <insert id="insert">
+        insert into station_view_all
+        ( 编码, 站名, 管理机构
+        , 东经, 北纬, 流域水系
+        , 河流名称, 基础水文, 降水蒸发
+        , 实时雨水情, 水质)
+        values ( #{编码,jdbcType=CHAR}, #{站名,jdbcType=CHAR}, #{管理机构,jdbcType=CHAR}
+               , #{东经,jdbcType=DECIMAL}, #{北纬,jdbcType=DECIMAL}, #{流域水系,jdbcType=CHAR}
+               , #{河流名称,jdbcType=CHAR}, #{基础水文,jdbcType=CHAR}, #{降水蒸发,jdbcType=CHAR}
+               , #{实时雨水情,jdbcType=CHAR}, #{水质,jdbcType=CHAR})
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="string">
+        delete
+        from station_view_all
+        where 编码 = #{string}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.leili.pojo.StationViewAll">
+        update station_view_all
+        set 编码       = #{编码,jdbcType=CHAR},
+            站名       = #{站名,jdbcType=CHAR},
+            管理机构   = #{管理机构,jdbcType=CHAR},
+            东经       = #{东经,jdbcType=DECIMAL},
+            北纬       = #{北纬,jdbcType=DECIMAL},
+            流域水系   = #{流域水系,jdbcType=CHAR},
+            河流名称   = #{河流名称,jdbcType=CHAR},
+            基础水文   = #{基础水文,jdbcType=CHAR},
+            降水蒸发   = #{降水蒸发,jdbcType=CHAR},
+            实时雨水情 = #{实时雨水情,jdbcType=CHAR},
+            水质       = #{水质,jdbcType=CHAR}
+        where 编码 = #{编码,jdbcType=CHAR}
+    </update>
+</mapper>

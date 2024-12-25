@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.StationEncodingMapper">
+
+    <resultMap id="BaseResultMap" type="com.leili.pojo.StationEncoding">
+            <id property="iid" column="IID" jdbcType="VARCHAR"/>
+            <id property="sttype" column="STTYPE" jdbcType="VARCHAR"/>
+            <result property="iname" column="INAME" jdbcType="VARCHAR"/>
+            <result property="pyk" column="PYK" jdbcType="VARCHAR"/>
+            <result property="stid" column="STID" jdbcType="VARCHAR"/>
+            <result property="nt" column="NT" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        IID,STTYPE,INAME,
+        PYK,STID,NT
+    </sql>
+
+    <select id="selectAll" resultType="stationEncoding">
+        select * from station_encoding
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from station_encoding
+        where  IID = #{iid,jdbcType=VARCHAR} AND STTYPE = #{sttype,jdbcType=VARCHAR} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="com.leili.pojo.StationEncoding">
+        delete from station_encoding
+        where  IID = #{iid,jdbcType=VARCHAR} AND STTYPE = #{sttype,jdbcType=VARCHAR} 
+    </delete>
+    <insert id="insert">
+        insert into station_encoding
+        ( IID,STTYPE,INAME
+        ,PYK,STID,NT
+        )
+        values (#{iid,jdbcType=VARCHAR},#{sttype,jdbcType=VARCHAR},#{iname,jdbcType=VARCHAR}
+        ,#{pyk,jdbcType=VARCHAR},#{stid,jdbcType=VARCHAR},#{nt,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective">
+        insert into station_encoding
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="iid != null">IID,</if>
+                <if test="sttype != null">STTYPE,</if>
+                <if test="iname != null">INAME,</if>
+                <if test="pyk != null">PYK,</if>
+                <if test="stid != null">STID,</if>
+                <if test="nt != null">NT,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="iid != null">#{iid,jdbcType=VARCHAR},</if>
+                <if test="sttype != null">#{sttype,jdbcType=VARCHAR},</if>
+                <if test="iname != null">#{iname,jdbcType=VARCHAR},</if>
+                <if test="pyk != null">#{pyk,jdbcType=VARCHAR},</if>
+                <if test="stid != null">#{stid,jdbcType=VARCHAR},</if>
+                <if test="nt != null">#{nt,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.leili.pojo.StationEncoding">
+        update station_encoding
+        <set>
+                <if test="iname != null">
+                    INAME = #{iname,jdbcType=VARCHAR},
+                </if>
+                <if test="pyk != null">
+                    PYK = #{pyk,jdbcType=VARCHAR},
+                </if>
+                <if test="stid != null">
+                    STID = #{stid,jdbcType=VARCHAR},
+                </if>
+                <if test="nt != null">
+                    NT = #{nt,jdbcType=VARCHAR},
+                </if>
+        </set>
+        where   IID = #{iid,jdbcType=VARCHAR} AND STTYPE = #{sttype,jdbcType=VARCHAR} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.leili.pojo.StationEncoding">
+        update station_encoding
+        set 
+            INAME =  #{iname,jdbcType=VARCHAR},
+            PYK =  #{pyk,jdbcType=VARCHAR},
+            STID =  #{stid,jdbcType=VARCHAR},
+            NT =  #{nt,jdbcType=VARCHAR}
+        where   IID = #{iid,jdbcType=VARCHAR} AND STTYPE = #{sttype,jdbcType=VARCHAR} 
+    </update>
+</mapper>

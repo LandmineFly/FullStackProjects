@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.StationViewAllMapper">
+
+    <resultMap id="BaseResultMap" type="com.leili.pojo.StationViewAll">
+            <result property="编码" column="编码" jdbcType="CHAR"/>
+            <result property="站名" column="站名" jdbcType="CHAR"/>
+            <result property="管理机构" column="管理机构" jdbcType="CHAR"/>
+            <result property="东经" column="东经" jdbcType="DECIMAL"/>
+            <result property="北纬" column="北纬" jdbcType="DECIMAL"/>
+            <result property="流域水系" column="流域水系" jdbcType="CHAR"/>
+            <result property="河流名称" column="河流名称" jdbcType="CHAR"/>
+            <result property="基础水文" column="基础水文" jdbcType="CHAR"/>
+            <result property="降水蒸发" column="降水蒸发" jdbcType="CHAR"/>
+            <result property="实时雨水情" column="实时雨水情" jdbcType="CHAR"/>
+            <result property="水质" column="水质" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        编码,站名,管理机构,
+        东经,北纬,流域水系,
+        河流名称,基础水文,降水蒸发,
+        实时雨水情,水质
+    </sql>
+
+    <select id="selectAll" resultType="stationViewAll">
+        select * from station_view_all
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="string">
+        delete from station_view_all
+        where 编码 = #{string}
+    </delete>
+
+    <insert id="insert">
+        insert into station_view_all
+        ( 编码,站名,管理机构
+        ,东经,北纬,流域水系
+        ,河流名称,基础水文,降水蒸发
+        ,实时雨水情,水质)
+        values (#{编码,jdbcType=CHAR},#{站名,jdbcType=CHAR},#{管理机构,jdbcType=CHAR}
+        ,#{东经,jdbcType=DECIMAL},#{北纬,jdbcType=DECIMAL},#{流域水系,jdbcType=CHAR}
+        ,#{河流名称,jdbcType=CHAR},#{基础水文,jdbcType=CHAR},#{降水蒸发,jdbcType=CHAR}
+        ,#{实时雨水情,jdbcType=CHAR},#{水质,jdbcType=CHAR})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.leili.pojo.StationViewAll">
+        update station_view_all
+        set 
+            编码 =  #{编码,jdbcType=CHAR},
+            站名 =  #{站名,jdbcType=CHAR},
+            管理机构 =  #{管理机构,jdbcType=CHAR},
+            东经 =  #{东经,jdbcType=DECIMAL},
+            北纬 =  #{北纬,jdbcType=DECIMAL},
+            流域水系 =  #{流域水系,jdbcType=CHAR},
+            河流名称 =  #{河流名称,jdbcType=CHAR},
+            基础水文 =  #{基础水文,jdbcType=CHAR},
+            降水蒸发 =  #{降水蒸发,jdbcType=CHAR},
+            实时雨水情 =  #{实时雨水情,jdbcType=CHAR},
+            水质 =  #{水质,jdbcType=CHAR}
+        where  编码 = #{编码,jdbcType=CHAR}
+    </update>
+</mapper>
