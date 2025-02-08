@@ -1,0 +1,449 @@
+CREATE TABLE station_encoding(
+                                 IID CHAR(30),
+                                 STTYPE CHAR(30),
+                                 INAME CHAR(20) NOT NULL,
+                                 PYK CHAR(9),
+                                 STID CHAR(30) NOT NULL,
+                                 NT VARCHAR(50),
+                                 PRIMARY KEY(IID,STTYPE)
+);
+
+CREATE INDEX IID_index ON station_encoding(IID);
+CREATE INDEX STTYPE_index ON station_encoding(STTYPE);
+
+CREATE TABLE station_location(
+                                 IID CHAR(30),
+                                 STTYPE CHAR(30),
+                                 RID INT NOT NULL,
+                                 LONGITUDE DEC(12,9) NOT NULL,
+                                 LATITUDE DEC(12,9) NOT NULL,
+                                 STLOC CHAR(50),
+                                 NT CHAR(50),
+                                 PRIMARY KEY(IID, STTYPE),
+                                 FOREIGN KEY(IID) REFERENCES station_encoding(IID),
+                                 FOREIGN KEY(STTYPE) REFERENCES station_encoding(STTYPE)
+);
+
+CREATE TABLE station_information(
+                                    IID CHAR(30),
+                                    STTYPE CHAR(30),
+                                    STLEVEL INT,
+                                    MAGWAY INT,
+                                    NT CHAR(50),
+                                    PRIMARY KEY (IID,STTYPE),
+                                    FOREIGN KEY (IID) REFERENCES station_encoding(IID),
+                                    FOREIGN KEY (STTYPE) REFERENCES station_encoding(STTYPE)
+);
+
+CREATE TABLE station_level(
+    STLEVEL INT PRIMARY KEY
+);
+
+CREATE TABLE manage_way(
+    MANWAY INT PRIMARY KEY
+);
+
+CREATE TABLE station_management(
+                                   IID CHAR(30),
+                                   STTYPE CHAR(30),
+                                   REGION INT,
+                                   MAGID INT,
+                                   PRIMARY KEY (IID,STTYPE),
+                                   FOREIGN KEY (IID) REFERENCES station_encoding(IID),
+                                   FOREIGN KEY (STTYPE) REFERENCES station_encoding(STTYPE)
+);
+
+CREATE TABLE management_unit(
+                                MAGID INT PRIMARY KEY,
+                                MAGNAME CHAR(50) NOT NULL,
+                                MAGLOC CHAR(50)
+);
+
+CREATE TABLE river_information(
+                                  RID INT PRIMARY KEY,
+                                  RNAME CHAR(50) NOT NULL,
+                                  REGION CHAR(50) NOT NULL
+);
+
+CREATE TABLE engineering(
+                            EID CHAR(30) PRIMARY KEY,
+                            ENAME CHAR(30),
+                            ETYPE CHAR(30)
+);
+
+CREATE TABLE station_engineering(
+                                    IID CHAR(30),
+                                    EID CHAR(30),
+                                    NT CHAR(50),
+                                    PRIMARY KEY (IID,EID),
+                                    FOREIGN KEY (IID) REFERENCES station_encoding(IID),
+                                    FOREIGN KEY (EID) REFERENCES engineering(EID)
+);
+
+CREATE TABLE watercourse(
+                            EID CHAR(30) PRIMARY KEY ,
+                            HWATERLINE DEC(8,2),
+                            LWATERLINE DEC(8,2),
+                            FOREIGN KEY(EID) REFERENCES engineering(EID)
+);
+
+CREATE TABLE reservoir(
+                          EID CHAR(30) PRIMARY KEY ,
+                          AWATERLINE DEC(8,2),
+                          HWATERLINE DEC(8,2),
+                          HEIGHT DEC(8,2),
+                          SIZE DEC(8,2),
+                          FOREIGN KEY(EID) REFERENCES engineering(EID)
+);
+
+CREATE TABLE precipitation(
+                              EID CHAR(30) PRIMARY KEY ,
+                              APRECIP DEC(8,2),
+                              HPRECIP DEC(8,2),
+                              WAY CHAR(20),
+                              FOREIGN KEY(EID) REFERENCES engineering(EID)
+);
+
+CREATE TABLE water_quality(
+                              EID CHAR(30) PRIMARY KEY ,
+                              WQUALITY CHAR(20),
+                              WAY CHAR(20),
+                              FOREIGN KEY(EID) REFERENCES engineering(EID)
+);
+
+CREATE TABLE soil_moisture(
+                              EID CHAR(30) PRIMARY KEY ,
+                              SMOISTURE CHAR(20),
+                              WAY CHAR(20),
+                              FOREIGN KEY(EID) REFERENCES engineering(EID)
+);
+
+ALTER TABLE station_location
+    ADD FOREIGN KEY(RID) REFERENCES river_information(RID);
+
+ALTER TABLE station_information
+    ADD FOREIGN KEY(STLEVEL) REFERENCES station_level(STLEVEL);
+
+ALTER TABLE station_information
+    ADD FOREIGN KEY (MAGWAY) REFERENCES  manage_way(MANWAY);
+
+ALTER TABLE station_management
+    ADD FOREIGN KEY (MAGID) REFERENCES management_unit(MAGID);
+
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0001','基础水文','艾家镇','ajz','60107320',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0002','基础水文','巴东','bd','60106720',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0002','降水蒸发','巴东','bd','60538700',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0002','实时雨水情','巴东','bd','60106700',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0002','水质','巴东','bd','60106700',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0003','基础水文','坝河口','bhk','60107140',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0003','降水蒸发','坝河口','bhk','60540210',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0003','实时雨水情','坝河口','bhk','60107140',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0004','基础水文','宝塔河','bth','60107310',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0005','基础水文','风箱沱','fxt','60107191',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0032','实时雨水情','太平溪','tpx','60106900',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.002','基础水文','茅坪','mp','60107000',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.002','实时雨水情','茅坪','mp','60107000',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0028','基础水文','三斗坪','sdp','60107100',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0028','实时雨水情','三斗坪','sdp','60107100',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0028','降水蒸发','三斗坪','sdp','60540200',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0023','基础水文','庙咀','mj','60107270',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0023','实时雨水情','庙咀','mj','60107270',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0033','基础水文','覃家沱','qjt','60107110',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0033','实时雨水情','覃家沱','qjt','60107110',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0047','基础水文','中隔岛','zgd','60107070',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0037','水质','晓溪塔','xxt','60980100',' ');
+INSERT INTO station_encoding(IID, STTYPE, INAME, PYK, STID, NT)
+VALUES('104.0021','基础水文','梅溪河口','mxhk','60513500',' ');
+
+INSERT INTO station_level(STLEVEL)
+VALUES(1),(2),(3),(4),(5);
+
+INSERT INTO manage_way(MANWAY)
+VALUES(1),(2),(3);
+
+INSERT INTO river_information(RID, RNAME, REGION) VALUES
+                                                      (1,'长江','长江上游下端'),
+                                                      (2,'长江','长江中游干流'),
+                                                      (3,'长江','长江干流'),
+                                                      (4,'黄柏河','黄柏河'),
+                                                      (5,'梅溪河','长江上游下端');
+
+INSERT INTO management_unit(MAGID, MAGNAME, MAGLOC) VALUES
+                                                        (1,'长江水利委员会水文局',' '),
+                                                        (2,'长江委水文局',' '),
+                                                        (3,'三峡分中心',' ');
+
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0001','基础水文',2,111.34764,30.6235,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0002','基础水文',1,110.37453,31.048222,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0002','降水蒸发',1,110.37453,31.048222,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0002','实时雨水情',1,110.37453,31.048222,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0002','水质',1,110.37453,31.048222,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0003','基础水文',1,111.05128,30.83603,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0003','降水蒸发',1,111.05128,30.83603,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0003','实时雨水情',1,111.05128,30.83603,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0004','基础水文',2,111.3155,30.66936,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0005','基础水文',1,111.1886,30.77614,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0032','实时雨水情',1,110.95958,30.87728,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.002','基础水文',3,110.98339,30.83122,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.002','实时雨水情',3,110.98339,30.83122,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0028','基础水文',3,111.01936,30.81567,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0028','实时雨水情',3,111.01936,30.81567,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0028','降水蒸发',3,111.01936,30.81567,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0023','基础水文',3,111.26864,30.70875,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0023','实时雨水情',3,111.26864,30.70875,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0033','基础水文',1,111.01444,30.82311,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0033','实时雨水情',1,111.01444,30.82311,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0047','基础水文',1,111.03608,30.82897,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0037','水质',4,111.31111,30.76944,' ',' ');
+INSERT INTO station_location(IID, STTYPE, RID, LONGITUDE, LATITUDE, STLOC, NT)
+VALUES('104.0021','基础水文',5,109.52422,31.05036,' ',' ');
+
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0001','基础水文',1,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0002','基础水文',1,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0002','降水蒸发',1,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0002','实时雨水情',1,2,'');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0002','水质',1,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0003','基础水文',3,3,'');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0003','降水蒸发',3,3,'');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0003','实时雨水情',3,3,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0004','基础水文',4,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0005','基础水文',3,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0032','实时雨水情',4,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.002','基础水文',5,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.002','实时雨水情',3,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0028','基础水文',5,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0028','实时雨水情',1,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0028','降水蒸发',1,3,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0023','基础水文',4,3,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0023','实时雨水情',1,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0033','基础水文',3,3,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0033','实时雨水情',5,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0047','基础水文',4,2,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0037','水质',4,1,' ');
+INSERT INTO station_information(IID, STTYPE, STLEVEL, MAGWAY, NT)
+VALUES('104.0021','基础水文',5,2,' ');
+
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0001','基础水文',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0002','基础水文',0,2);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0002','降水蒸发',0,2);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0002','实时雨水情',0,2);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0002','水质',0,2);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0003','基础水文',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0003','降水蒸发',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0003','实时雨水情',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0004','基础水文',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0005','基础水文',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0032','实时雨水情',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.002','基础水文',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.002','实时雨水情',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0028','基础水文',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0028','实时雨水情',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0028','降水蒸发',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0023','基础水文',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0023','实时雨水情',0,3);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0033','基础水文',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0033','实时雨水情',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0047','基础水文',0,1);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0037','水质',0,2);
+INSERT INTO station_management(IID, STTYPE, REGION, MAGID)
+VALUES('104.0021','基础水文',0,1);
+
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('106700','','河道观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('106900','','河道观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('107000','','河道观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('107100','','河道观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('107160','','河道观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('107200','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('206900','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('207000','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('207100','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('206800','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('207270','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('207110','','降水观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('307130','','库湖观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('307165','','库湖观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('307181','','库湖观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('407120','','水质观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('407180','','水质观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('404390','','水质观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('404310','','水质观测');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('501950','','土壤墒情');
+INSERT INTO engineering(EID, ENAME, ETYPE)
+VALUES('500100','','土壤墒情');
+
+INSERT INTO watercourse(EID, HWATERLINE, LWATERLINE) VALUES
+                                                         ('106700',175.04,54.7),
+                                                         ('106900',175.06,42.1),
+                                                         ('107000',175.05,40.1),
+                                                         ('107160',73.35,63.4),
+                                                         ('107200',67.03,59.1);
+
+INSERT INTO precipitation(EID, APRECIP, HPRECIP, WAY) VALUES
+                                                          ('206900',1155.7,1779.9,''),
+                                                          ('207000',1273,1895.3,''),
+                                                          ('207100',998.7,1600.8,''),
+                                                          ('206800',1233.2,1754.4,''),
+                                                          ('207270',1134.4,1745.4,''),
+                                                          ('207110',1254.3,1698.5,'');
+
+ALTER TABLE river_information
+    RENAME COLUMN REGION to RREGION;
+
+ALTER TABLE station_location
+    MODIFY COLUMN LONGITUDE DEC(12,5),
+    MODIFY COLUMN LATITUDE DEC(12,5);
+
+CREATE VIEW station_view1(编码,站名,管理机构,东经,北纬,流域水系,河流名称)
+AS SELECT DISTINCT station_encoding.IID, INAME, MAGNAME, LONGITUDE, LATITUDE, RREGION, RNAME
+   FROM station_encoding, station_location, station_management, management_unit, river_information
+   WHERE station_encoding.IID = station_location.IID AND station_encoding.STTYPE = station_location.STTYPE
+     AND station_location.IID = station_management.IID AND station_location.STTYPE = station_management.STTYPE
+     AND station_management.MAGID = management_unit.MAGID
+     AND station_location.RID = river_information.RID;
+
+
+CREATE VIEW station_viewx(编码,站名,基础水文,降水蒸发,实时雨水情,水质)
+AS SELECT DISTINCT x.IID, x.INAME, x.STID, y.STID, z.STID, w.STID
+   FROM station_encoding x, station_encoding y, station_encoding z, station_encoding w
+   WHERE x.IID = y.IID AND x.IID = z.IID AND x.IID = w.IID
+     AND (x.STTYPE = '基础水文' OR y.STTYPE = '降水蒸发' OR z.STTYPE = '实时雨水情' OR w.STTYPE = '水质');
+
+
+CREATE VIEW station_view2(编码, 站名, 基础水文, 降水蒸发, 实时雨水情, 水质)
+AS SELECT DISTINCT x.IID, x.INAME, x1.STID, y.STID, z.STID, w.STID
+   FROM station_encoding x
+            LEFT JOIN station_encoding x1 ON x.IID = x1.IID AND x1.STTYPE = '基础水文'
+            LEFT JOIN station_encoding y ON x.IID = y.IID AND y.STTYPE = '降水蒸发'
+            LEFT JOIN station_encoding z ON x.IID = z.IID AND z.STTYPE = '实时雨水情'
+            LEFT JOIN station_encoding w ON x.IID = w.IID AND w.STTYPE = '水质';
+
+
+CREATE VIEW station_view_all(编码,站名,管理机构,东经,北纬,流域水系,河流名称,基础水文, 降水蒸发, 实时雨水情, 水质)
+AS SELECT DISTINCT station_view1.编码, station_view1.站名,管理机构,东经,北纬,流域水系,河流名称,基础水文,降水蒸发,实时雨水情,水质
+   FROM station_view1, station_view2
+   WHERE station_view1.编码 = station_view2.编码;
+
+SELECT * FROM station_view_all;
+
+ALTER TABLE station_encoding
+    ADD CONSTRAINT iid_constraint CHECK (IID REGEXP '[0-9]{3}\.[0-9]{3,4}');
+
+ALTER TABLE station_encoding
+    ADD CONSTRAINT sttpe_constraint CHECK (STTYPE IN ('基础水文','降水蒸发','实时雨水情','水质'));
+
+CREATE TABLE user(
+    id int PRIMARY KEY AUTO_INCREMENT,
+    usr varchar(50) NOT NULL,
+    pwd varchar(50) NOT NULL,
+    is_admin boolean NOT NULL
+);
+
+INSERT INTO user(usr, pwd, is_admin) VALUES ('diana','1234',1);
