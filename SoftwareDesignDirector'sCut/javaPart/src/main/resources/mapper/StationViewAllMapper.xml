@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.StationViewAllMapper">
+
+    <select id="countAllWithCondition" resultType="int">
+        SELECT COUNT(*) FROM station_view_all
+        <where>
+            <if test="searchBy.编码 != null &amp; searchBy.编码 != ''">
+                AND 编码 LIKE CONCAT('%',#{searchBy.编码},'%')
+            </if>
+            <if test="searchBy.站名 != null &amp; searchBy.站名 != ''">
+                AND 站名 LIKE CONCAT('%',#{searchBy.站名},'%')
+            </if>
+            <if test="searchBy.管理机构 != null &amp; searchBy.管理机构 != ''">
+                AND 管理机构 LIKE CONCAT('%',#{searchBy.管理机构},'%')
+            </if>
+            <if test="searchBy.东经 != null &amp; searchBy.东经 != ''">
+                AND 东经 LIKE CONCAT('%',#{searchBy.东经},'%')
+            </if>
+            <if test="searchBy.北纬 != null &amp; searchBy.北纬 != ''">
+                AND 北纬 LIKE CONCAT('%',#{searchBy.北纬},'%')
+            </if>
+            <if test="searchBy.流域水系 != null &amp; searchBy.流域水系 != ''">
+                AND 流域水系 LIKE CONCAT('%',#{searchBy.流域水系},'%')
+            </if>
+            <if test="searchBy.河流名称 != null &amp; searchBy.河流名称 != ''">
+                AND 河流名称 LIKE CONCAT('%',#{searchBy.河流名称},'%')
+            </if>
+            <if test="searchBy.基础水文 != null &amp; searchBy.基础水文 != ''">
+                AND 基础水文 LIKE CONCAT('%',#{searchBy.基础水文},'%')
+            </if>
+            <if test="searchBy.降水蒸发 != null &amp; searchBy.降水蒸发 != ''">
+                AND 降水蒸发 LIKE CONCAT('%',#{searchBy.降水蒸发},'%')
+            </if>
+            <if test="searchBy.实时雨水情 != null &amp; searchBy.实时雨水情 != ''">
+                AND 实时雨水情 LIKE CONCAT('%',#{searchBy.实时雨水情},'%')
+            </if>
+            <if test="searchBy.水质 != null &amp; searchBy.水质 != ''">
+                AND 水质 LIKE CONCAT('%',#{searchBy.水质},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="select" resultType="stationViewAll">
+        SELECT * FROM station_view_all
+        <where>
+            <if test="searchBy.编码 != null &amp; searchBy.编码 != ''">
+                AND 编码 LIKE CONCAT('%',#{searchBy.编码},'%')
+            </if>
+            <if test="searchBy.站名 != null &amp; searchBy.站名 != ''">
+                AND 站名 LIKE CONCAT('%',#{searchBy.站名},'%')
+            </if>
+            <if test="searchBy.管理机构 != null &amp; searchBy.管理机构 != ''">
+                AND 管理机构 LIKE CONCAT('%',#{searchBy.管理机构},'%')
+            </if>
+            <if test="searchBy.东经 != null &amp; searchBy.东经 != ''">
+                AND 东经 LIKE CONCAT('%',#{searchBy.东经},'%')
+            </if>
+            <if test="searchBy.北纬 != null &amp; searchBy.北纬 != ''">
+                AND 北纬 LIKE CONCAT('%',#{searchBy.北纬},'%')
+            </if>
+            <if test="searchBy.流域水系 != null &amp; searchBy.流域水系 != ''">
+                AND 流域水系 LIKE CONCAT('%',#{searchBy.流域水系},'%')
+            </if>
+            <if test="searchBy.河流名称 != null &amp; searchBy.河流名称 != ''">
+                AND 河流名称 LIKE CONCAT('%',#{searchBy.河流名称},'%')
+            </if>
+            <if test="searchBy.基础水文 != null &amp; searchBy.基础水文 != ''">
+                AND 基础水文 LIKE CONCAT('%',#{searchBy.基础水文},'%')
+            </if>
+            <if test="searchBy.降水蒸发 != null &amp; searchBy.降水蒸发 != ''">
+                AND 降水蒸发 LIKE CONCAT('%',#{searchBy.降水蒸发},'%')
+            </if>
+            <if test="searchBy.实时雨水情 != null &amp; searchBy.实时雨水情 != ''">
+                AND 实时雨水情 LIKE CONCAT('%',#{searchBy.实时雨水情},'%')
+            </if>
+            <if test="searchBy.水质 != null &amp; searchBy.水质 != ''">
+                AND 水质 LIKE CONCAT('%',#{searchBy.水质},'%')
+            </if>
+        </where>
+        <if test="sortBy != null">
+            ORDER BY ${sortBy.key} ${sortBy.order}
+        </if>
+        <if test="itemsPerPage != -1">
+            LIMIT #{itemsPerPage} OFFSET #{offset}
+        </if>
+    </select>
+
+</mapper>

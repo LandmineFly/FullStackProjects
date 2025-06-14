@@ -1,0 +1,6 @@
+@import "./reset.css";
+
+body {
+	position: relative;
+	user-select: none !important;
+}

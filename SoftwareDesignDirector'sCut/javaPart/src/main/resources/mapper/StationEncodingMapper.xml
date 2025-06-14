@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.StationEncodingMapper">
+
+    <select id="countAllWithCondition" resultType="int">
+        SELECT COUNT(*) FROM station_encoding
+        <where>
+            <if test="searchBy.iid != null">
+                AND IID LIKE CONCAT('%',#{searchBy.iid},'%')
+            </if>
+            <if test="searchBy.sttype != null">
+                AND STTYPE LIKE CONCAT('%',#{searchBy.sttype},'%')
+            </if>
+            <if test="searchBy.iname != null">
+                AND INAME LIKE CONCAT('%',#{searchBy.iname},'%')
+            </if>
+            <if test="searchBy.pyk != null">
+                AND PYK LIKE CONCAT('%',#{searchBy.pyk},'%')
+            </if>
+            <if test="searchBy.stid != null">
+                AND STID LIKE CONCAT('%',#{searchBy.stid},'%')
+            </if>
+            <if test="searchBy.nt != null">
+                AND NT LIKE CONCAT('%',#{searchBy.nt},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="select" resultType="stationEncoding">
+        SELECT * FROM station_encoding
+        <where>
+            <if test="searchBy.iid != null ">
+                AND IID LIKE CONCAT('%',#{searchBy.iid},'%')
+            </if>
+            <if test="searchBy.sttype != null">
+                AND STTYPE LIKE CONCAT('%',#{searchBy.sttype},'%')
+            </if>
+            <if test="searchBy.iname != null">
+                AND INAME LIKE CONCAT('%',#{searchBy.iname},'%')
+            </if>
+            <if test="searchBy.pyk != null">
+                AND PYK LIKE CONCAT('%',#{searchBy.pyk},'%')
+            </if>
+            <if test="searchBy.stid != null">
+                AND STID LIKE CONCAT('%',#{searchBy.stid},'%')
+            </if>
+            <if test="searchBy.nt != null">
+                AND NT LIKE CONCAT('%',#{searchBy.nt},'%')
+            </if>
+        </where>
+        <if test="sortBy != null">
+            ORDER BY ${sortBy.key} ${sortBy.order}
+        </if>
+        <if test="itemsPerPage != -1">
+            LIMIT #{itemsPerPage} OFFSET #{offset}
+        </if>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO station_encoding
+        ( IID, STTYPE, INAME
+        , PYK, STID, NT)
+        VALUES ( #{iid,jdbcType=VARCHAR}, #{sttype,jdbcType=VARCHAR}, #{iname,jdbcType=VARCHAR}
+               , #{pyk,jdbcType=VARCHAR}, #{stid,jdbcType=VARCHAR}, #{nt,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="batchInsert" parameterType="list">
+        INSERT INTO station_encoding
+        ( IID, STTYPE, INAME
+        , PYK, STID, NT)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            ( #{item.iid,jdbcType=VARCHAR}, #{item.sttype,jdbcType=VARCHAR}, #{item.iname,jdbcType=VARCHAR}
+            , #{item.pyk,jdbcType=VARCHAR}, #{item.stid,jdbcType=VARCHAR}, #{item.nt,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="com.leili.pojo.StationEncoding">
+        DELETE
+        FROM station_encoding
+        WHERE IID = #{iid,jdbcType=VARCHAR}
+          AND STTYPE = #{sttype,jdbcType=VARCHAR}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.leili.pojo.StationEncoding">
+        UPDATE station_encoding
+        SET INAME = #{iname,jdbcType=VARCHAR},
+            PYK   = #{pyk,jdbcType=VARCHAR},
+            STID  = #{stid,jdbcType=VARCHAR},
+            NT    = #{nt,jdbcType=VARCHAR}
+        WHERE IID = #{iid,jdbcType=VARCHAR}
+          AND STTYPE = #{sttype,jdbcType=VARCHAR}
+    </update>
+
+    <select id="isDuplicate" resultType="int">
+        SELECT COUNT(*)
+        FROM station_encoding
+        WHERE IID = #{iid,jdbcType=VARCHAR}
+          AND STTYPE = #{sttype,jdbcType=VARCHAR}
+    </select>
+</mapper>

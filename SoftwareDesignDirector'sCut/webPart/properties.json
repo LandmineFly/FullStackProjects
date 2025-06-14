@@ -1,0 +1,4 @@
+{
+    "inactivityTimerProp": 1800000,
+    "keepAliveIntervalProp": 5000
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leili.mapper.ImportHistoryMapper">
+
+    <select id="countAllWithCondition" resultType="int">
+        SELECT COUNT(*) FROM import_history
+    </select>
+
+    <select id="select" resultType="importHistory">
+        SELECT * FROM import_history
+        <if test="sortBy != null">
+            ORDER BY ${sortBy.key} ${sortBy.order}
+        </if>
+        <if test="itemsPerPage != -1">
+            LIMIT #{itemsPerPage} OFFSET #{offset}
+        </if>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO import_history
+        (import_type, import_url, import_time, import_count)
+        VALUES (#{importType}, #{importUrl}, #{importTime}, #{importCount})
+    </insert>
+
+</mapper>
