@@ -26,6 +26,9 @@ export default {
 			},
 			// main标签的overflow状态，进入主页面前需保持为hidden
 			mainOverflow: "hidden",
+			// 设置备案信息显示
+			// TODO: 与vuex结合
+			isShowBeiAnMessage: true,
 			// 设置特殊组件的主题颜色（占位）
 			theme: {
 				light: {},
@@ -197,7 +200,7 @@ export default {
 					<!-- 标准模式 -->
 					<v-container
 						fluid
-						class="fill-height pa-5"
+						class="fill-height pa-10"
 						v-show="mode.name === 'standard'"
 					>
 						<!-- no-gutters去掉v-row的负外边距，v-col的内边距 -->
@@ -210,6 +213,7 @@ export default {
 						>
 							<!-- 所有需要过渡动画的组件都需要添加transition-element类 -->
 							<!-- mode.transition.standard 为组件设置进入或退出过渡动画 -->
+							<!-- 当前所有组件都放完退出过渡动画后，外层的containner才能v-if=false，反之同理 -->
 							<v-col
 								cols="auto"
 								class="rounded-xl glass-style transition-element d-flex flex-column align-center justify-center"
@@ -257,9 +261,11 @@ export default {
 					width: 100%;
 					position: absolute;
 					bottom: 0px;
-					color: grey;
+					color: white;
 					opacity: 0.6;
+					background-color: rgba(0, 0, 0, 0.6);
 				"
+				v-if="isShowBeiAnMessage"
 			>
 				<!-- 把container自带的padding去掉 -->
 				<v-container style="padding: 0px">
@@ -283,6 +289,15 @@ export default {
 								size="x-small"
 							>
 								粤ICP备2025384677号-1
+							</v-btn>
+						</v-col>
+						<v-col cols="auto">
+							<v-btn
+								@click="isShowBeiAnMessage = !isShowBeiAnMessage"
+								variant="text"
+								size="x-small"
+							>
+								关闭
 							</v-btn>
 						</v-col>
 					</v-row>
