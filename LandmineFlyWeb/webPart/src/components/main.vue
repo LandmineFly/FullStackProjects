@@ -5,6 +5,11 @@ import { Transition } from "vue";
 // assets 下的资源需要导入，且由构建工具(vite)进行处理，适合需经过构建处理的资源(如动态图片、CSS、字体)
 import main_background_url from "@/assets/images/ksm_AI2X.webp";
 
+/*
+ * 调试：要想跳过加载页面直接进入主页面，需要以下操作：
+ * 1. 将data()的enterMain设置为true
+ * 2. mounted()的then()中调用loadedFunc_bebug()
+ */
 export default {
 	data() {
 		return {
@@ -14,8 +19,10 @@ export default {
 					circle: false,
 					text: false,
 				},
-				// true为调试用，直接进入主页面
+				// 进入主界面
 				enterMain: false,
+				// // 调试：设置为true，直接进入主界面
+				// enterMain: true,
 			},
 			// main标签的overflow状态，进入主页面前需保持为hidden
 			mainOverflow: "hidden",
@@ -67,6 +74,24 @@ export default {
 				}, 1400);
 			}, 1500);
 		},
+		// 调试：加载完毕函数，直接进入主界面
+		loadedFunc_debug() {
+			// 将加载完毕的图片进行赋值
+			this.images.mainBackground = main_background_url;
+
+			// 设置圆圈和文字动画
+			this.loaded.animation.circle = true;
+			this.loaded.animation.text = true;
+
+			this.loaded.enterMain = true;
+
+			// 进入主页面后设置main标签的overflow为auto
+			this.mainOverflow = "auto";
+			// 由于火狐的限制，主界面组件在进入主页面动画时既不渲染更没有动画
+			// 因此必须在进入主页面后才设置过渡动画，否则会闪现
+			var modeName = this.mode.name;
+			this.mode.transition[modeName] = "move-in-element";
+		},
 		// 打开备案网站
 		open_stupid_bei_an_website(value) {
 			if (value === 0) {
@@ -96,11 +121,15 @@ export default {
 			})
 		)
 			.then(() => {
-				// 当前加载速度太快了，人为让它等一下（调试）
+				// 调试：当前加载速度太快了，人为让它等一下
 				setTimeout(() => {
 					this.loadedFunc();
 				}, 500);
 
+				// // 调试：直接进入主界面
+				// this.loadedFunc_debug();
+
+				// // 加载完毕
 				// this.loadedFunc();
 			})
 			.catch((err) => console.log("failed to load images: ", err));
