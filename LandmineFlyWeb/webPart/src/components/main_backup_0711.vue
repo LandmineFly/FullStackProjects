@@ -4,9 +4,6 @@ import { Transition } from "vue";
 // public下的资源无需导入，直接暴露给浏览器，适合静态资源
 // assets 下的资源需要导入，且由构建工具(vite)进行处理，适合需经过构建处理的资源(如动态图片、CSS、字体)
 import main_background_url from "@/assets/images/ksm_AI2X.webp";
-import logo_url from "@/assets/images/icon_1_light_AI2X.webp";
-
-import { timeMessage } from "@/data/timeMessage.js";
 
 /*
  * 调试：要想跳过加载页面直接进入主页面，需要以下操作：
@@ -29,8 +26,7 @@ export default {
 			},
 			// 需要在mounted()中提前加载的图像资源
 			images: {
-				mainBackground: "https://bing.ee123.net/img?imgtype=webp",
-				logo: logo_url,
+				mainBackground: main_background_url,
 			},
 			// main标签的overflow状态，进入主页面前需保持为hidden
 			mainOverflow: "hidden",
@@ -52,14 +48,6 @@ export default {
 					standard: "move-out-element",
 					light: "move-out-element",
 				},
-			},
-			time: {
-				timer: null,
-				currentDate: null,
-				currentTime: null,
-				currentHour: null,
-				currentMessage: null,
-				timeMessage,
 			},
 		};
 	},
@@ -101,47 +89,6 @@ export default {
 			var modeName = this.mode.name;
 			this.mode.transition[modeName] = "move-in-element";
 		},
-		updateTime() {
-			const now = new Date();
-
-			// 获取问候语，只在小时变化时更新
-			const h = now.getHours();
-			if (this.time.currentHour == null || this.time.currentHour != h) {
-				// 每个阶段的问候语数量应该都是一致的，因此这里直接算morning的就好
-				const len = this.time.timeMessage.morning.length
-				const randomIndex = Math.floor(Math.random() * len);
-
-				if (h < 6) {
-					this.time.currentMessage =
-						this.time.timeMessage.midnight[randomIndex];
-				} else if (h < 11) {
-					this.time.currentMessage = this.time.timeMessage.noon[randomIndex];
-				} else if (h < 13) {
-					this.time.currentMessage = this.time.timeMessage.morning[randomIndex];
-				} else if (h < 18) {
-					this.time.currentMessage =
-						this.time.timeMessage.afternoon[randomIndex];
-				} else {
-					this.time.currentMessage = this.time.timeMessage.night[randomIndex];
-				}
-
-				this.time.currentHour = h;
-			}
-
-			// 获取日期
-			const weekMap = ["日", "一", "二", "三", "四", "五", "六"];
-			const y = now.getFullYear();
-			const m = String(now.getMonth() + 1).padStart(2, "0");
-			const d = String(now.getDate()).padStart(2, "0");
-			const w = `星期${weekMap[now.getDay()]}`;
-			this.time.currentDate = `${y} 年 ${m} 月 ${d} 日 ${w}`;
-
-			// 获取时间
-			const hStr = String(h).padStart(2, "0");
-			const min = String(now.getMinutes()).padStart(2, "0");
-			const s = String(now.getSeconds()).padStart(2, "0");
-			this.time.currentTime = `${hStr}:${min}:${s}`;
-		},
 		// 打开备案网站
 		open_stupid_bei_an_website(value) {
 			if (value === 0) {
@@ -155,12 +102,6 @@ export default {
 		},
 	},
 	mounted() {
-		// 开始更新时间
-		this.updateTime();
-		this.timer = setInterval(() => {
-			this.updateTime();
-		}, 1000);
-
 		// 在加载页面提前加载图片资源
 		Promise.all(
 			Object.keys(this.images).map((key) => {
@@ -176,17 +117,18 @@ export default {
 			})
 		)
 			.then(() => {
-				// 加载完毕
-				this.loadedFunc();
+				// 调试：当前加载速度太快了，人为让它等一下
+				setTimeout(() => {
+					this.loadedFunc();
+				}, 500);
 
 				// // 调试：直接进入主界面
 				// this.loadedFunc_debug();
+
+				// // 加载完毕
+				// this.loadedFunc();
 			})
 			.catch((err) => console.log("failed to load images: ", err));
-	},
-	beforeDestroy() {
-		// 离开页面时停止更新时间，防止内存泄漏
-		clearInterval(this.timer);
 	},
 };
 </script>
@@ -243,191 +185,63 @@ export default {
 				</v-container>
 
 				<!-- 主页面 -->
-				<!-- TODO: 添加视口适配（大工程），现在先将 min-width 设置为与 container 相同的 width -->
-				<!-- 设想：视口过小时锁定为精简模式，可以减小适配工作量 -->
 				<v-sheet
-					style="
-						width: 100%;
-						height: 100%;
-						background-size: cover;
-						min-width: 1200px;
-					"
+					style="width: 100%; height: 100%; background-size: cover"
 					:style="'background-image: url(' + images.mainBackground + ');'"
 					v-else-if="loaded.enterMain"
-					class="d-flex align-center justify-center"
 				>
 					<!-- 标准模式 -->
 					<v-container
-						style="height: 1000px; width: 1200px"
 						fluid
-						class="pa-3"
+						class="fill-height pa-10"
 						v-show="mode.name === 'standard'"
 					>
-						<!-- 上半部分 -->
 						<!-- no-gutters去掉v-row的负外边距，v-col的内边距 -->
 						<!-- byd为什么会默认有负外边距啊，铸币吧 -->
 						<v-row
-							class="flex-column"
 							no-gutters
 							justify="center"
 							align="center"
-							style="width: 100%; height: 50%"
+							style="height: 100%"
 						>
 							<!-- 所有需要过渡动画的组件都需要添加transition-element类 -->
 							<!-- mode.transition.standard 为组件设置进入或退出过渡动画 -->
 							<!-- 当前所有组件都放完退出过渡动画后，外层的containner才能v-if=false，反之同理 -->
-
 							<v-col
 								cols="auto"
-								class="transition-element d-flex align-center justify-center"
+								class="rounded-xl glass-style transition-element d-flex flex-column align-center justify-center"
 								:class="[mode.transition.standard]"
-								style="width: 50%; height: 50%"
+								style="width: 100%; height: 100%"
 							>
-								<v-sheet
-									style="width: 95%; height: 90%"
-									class="pa-3 rounded-xl glass-style d-flex align-center justify-start"
+								<p
+									class="mt-2 mb-2 text-h3 font-weight-thin"
+									style="text-align: center"
 								>
-									<!-- 传说中的布局地狱 -->
-									<v-container>
-										<v-row no-gutters>
-											<v-col cols="4">
-												<v-img :src="images.logo" class="pr-3"></v-img>
-											</v-col>
-											<v-col cols="8" align-self="center">
-												<v-row>
-													<v-col cols="12">
-														<p
-															style="
-																font-family: 'Pacifico' !important;
-																font-size: 55px;
-																text-align: center;
-															"
-														>
-															LandmineFly
-														</p>
-													</v-col>
-												</v-row>
-												<v-row justify="space-between">
-													<v-col cols="auto">
-														<p
-															style="
-																font-weight: 100;
-																font-size: 30px;
-																text-align: start;
-															"
-															class="pl-3"
-														>
-															云履循光
-														</p>
-													</v-col>
-													<v-col cols="auto">
-														<p
-															style="
-																font-family: 'Pacifico' !important;
-																font-size: 35px;
-																text-align: end;
-															"
-															class="pr-6"
-														>
-															.top
-														</p>
-													</v-col>
-												</v-row>
-											</v-col>
-										</v-row>
-									</v-container>
-								</v-sheet>
-							</v-col>
-							<v-col
-								cols="auto"
-								class="transition-element d-flex align-center justify-center"
-								:class="[mode.transition.standard]"
-								style="width: 50%; height: 50%"
-							>
-								<v-sheet
-									class="rounded-xl glass-style d-flex flex-column align-center justify-center"
-									style="width: 95%; height: 90%"
+									锐意建设中 !
+								</p>
+								<p
+									class="mt-2 mb-2 text-subtitle-2 font-weight-thin"
+									style="text-align: center"
 								>
-									<p class="pt-3" style="font-size: 25px; font-weight: 300">
-										{{ time.currentDate }}
-									</p>
-									<p
-										class="pt-3"
-										style="
-											font-family: 'DS-Digital' !important;
-											font-size: 90px;
-											font-weight: 300;
-										"
+									联系我：
+									<v-btn
+										href="https://space.bilibili.com/219547577"
+										class="text-subtitle-2 font-weight-thin rounded-xl mb-1"
+										variant="text"
+										size="x-small"
 									>
-										{{ time.currentTime }}
-									</p>
-									<p class="pt-3" style="font-size: 18px; font-weight: 300">
-										{{ time.currentMessage }}
-									</p>
-								</v-sheet>
-							</v-col>
-							<v-col
-								cols="auto"
-								class="transition-element d-flex align-center justify-center"
-								:class="[mode.transition.standard]"
-								style="width: 50%; height: 100%"
-							>
-								<v-sheet
-									class="rounded-xl glass-style"
-									style="width: 95%; height: 95%"
-								></v-sheet>
-							</v-col>
-						</v-row>
-						<v-row
-							class="flex-column"
-							no-gutters
-							justify="center"
-							align="center"
-							style="width: 100%; height: 50%"
-						>
-							<v-col
-								cols="auto"
-								class="transition-element d-flex align-center justify-center"
-								:class="[mode.transition.standard]"
-								style="width: 50%; height: 100%"
-							>
-								<v-sheet
-									class="rounded-xl glass-style"
-									style="width: 95%; height: 95%"
-								></v-sheet>
-							</v-col>
-							<v-col
-								cols="auto"
-								class="transition-element d-flex align-center justify-center"
-								:class="[mode.transition.standard]"
-								style="width: 50%; height: 40%"
-							>
-								<v-sheet
-									class="rounded-xl glass-style"
-									style="width: 95%; height: 90%"
-								></v-sheet>
-							</v-col>
-							<v-col
-								cols="auto"
-								class="transition-element d-flex align-center justify-center"
-								:class="[mode.transition.standard]"
-								style="width: 50%; height: 40%"
-							>
-								<v-sheet
-									class="rounded-xl glass-style"
-									style="width: 95%; height: 90%"
-								></v-sheet>
-							</v-col>
-							<v-col
-								cols="auto"
-								class="transition-element d-flex align-center justify-center"
-								:class="[mode.transition.standard]"
-								style="width: 50%; height: 17%"
-							>
-								<v-sheet
-									class="rounded-xl glass-style"
-									style="width: 95%; height: 90%"
-								></v-sheet>
+										哔哩哔哩
+									</v-btn>
+									<span>|</span>
+									<v-btn
+										href="https://github.com/LandmineFly"
+										class="text-subtitle-2 font-weight-thin rounded-xl mb-1"
+										variant="text"
+										size="x-small"
+									>
+										Github
+									</v-btn>
+								</p>
 							</v-col>
 						</v-row>
 					</v-container>
@@ -619,10 +433,10 @@ export default {
 }
 
 .glass-style {
-	background: rgba(0, 0, 0, 0.3) !important;
-	backdrop-filter: blur(10px) !important;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
-	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	background: rgba(0, 0, 0, 0.3);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+	border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* 所有需要过渡动画的组件都需要添加这个类 */

@@ -64,3 +64,21 @@ body,
 	font-family: "Noto Sans SC", "Microsoft YaHei", "Segoe UI", "Roboto", "Arial",
 		sans-serif !important;
 }
+
+/* pacifico-regular - latin */
+@font-face {
+	font-display: swap; /* 立即用系统字体显示,字体下载完成后再替换成自定义字体(不会空白) */
+	font-family: "Pacifico";
+	font-style: normal;
+	font-weight: 400;
+	src: url("./fonts/pacifico-v22-latin-regular.woff2") format("woff2");
+}
+
+/* DS-Digital-Bold */
+@font-face {
+	font-display: swap;
+	font-family: "DS-Digital";
+	font-weight: normal;
+	font-style: normal;
+	src: url("./fonts/DS-DIGIB.TTF") format("truetype");
+}
