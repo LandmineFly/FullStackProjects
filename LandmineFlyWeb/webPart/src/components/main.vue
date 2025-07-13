@@ -1,5 +1,6 @@
 <script>
 import { Transition } from "vue";
+import axios from "axios";
 // 导入 assets 资源(@为项目根路径的默认别名，见vite.config.js)
 // public下的资源无需导入，直接暴露给浏览器，适合静态资源
 // assets 下的资源需要导入，且由构建工具(vite)进行处理，适合需经过构建处理的资源(如动态图片、CSS、字体)
@@ -61,6 +62,9 @@ export default {
 				currentMessage: null,
 				timeMessage,
 			},
+			weather: {
+				data: null,
+			},
 		};
 	},
 	methods: {
@@ -108,16 +112,16 @@ export default {
 			const h = now.getHours();
 			if (this.time.currentHour == null || this.time.currentHour != h) {
 				// 每个阶段的问候语数量应该都是一致的，因此这里直接算morning的就好
-				const len = this.time.timeMessage.morning.length
+				const len = this.time.timeMessage.morning.length;
 				const randomIndex = Math.floor(Math.random() * len);
 
 				if (h < 6) {
 					this.time.currentMessage =
 						this.time.timeMessage.midnight[randomIndex];
 				} else if (h < 11) {
-					this.time.currentMessage = this.time.timeMessage.noon[randomIndex];
-				} else if (h < 13) {
 					this.time.currentMessage = this.time.timeMessage.morning[randomIndex];
+				} else if (h < 13) {
+					this.time.currentMessage = this.time.timeMessage.noon[randomIndex];
 				} else if (h < 18) {
 					this.time.currentMessage =
 						this.time.timeMessage.afternoon[randomIndex];
@@ -161,20 +165,33 @@ export default {
 			this.updateTime();
 		}, 1000);
 
-		// 在加载页面提前加载图片资源
-		Promise.all(
-			Object.keys(this.images).map((key) => {
-				return new Promise((resolve, reject) => {
-					const image = new Image();
-					// onload 和 onerror 都是事件处理器
-					// 分别在图片加载成功和加载失败时触发
-					image.onload = resolve;
-					image.onerror = reject;
-					// 设置图片的src，设置后图片就会开始加载
-					image.src = this.images[key];
-				});
+		const imageLoadPromises = Object.keys(this.images).map((key) => {
+			return new Promise((resolve, reject) => {
+				const image = new Image();
+				// onload 和 onerror 都是事件处理器
+				// 分别在图片加载成功和加载失败时触发
+				image.onload = resolve;
+				image.onerror = reject;
+				// 设置图片的src，设置后图片就会开始加载
+				image.src = this.images[key];
+			}).catch((err) => {
+				console.log("failed to load images: ", err);
+			});
+		});
+
+		const weatherRequestPromise = axios
+			.get(
+				"http://api.weatherapi.com/v1/forecast.json?key=2b3ec309ac404d889a395235250407&q=Nanjing&days=3&aqi=yes&lang=zh"
+			)
+			.then((res) => {
+				this.weather.data = res.data;
 			})
-		)
+			.catch((err) => {
+				console.log(err);
+			});
+
+		// 在加载页面提前加载图片资源
+		Promise.all([...imageLoadPromises, weatherRequestPromise])
 			.then(() => {
 				// 加载完毕
 				this.loadedFunc();
@@ -182,7 +199,7 @@ export default {
 				// // 调试：直接进入主界面
 				// this.loadedFunc_debug();
 			})
-			.catch((err) => console.log("failed to load images: ", err));
+			.catch((err) => console.log("error: ", err));
 	},
 	beforeDestroy() {
 		// 离开页面时停止更新时间，防止内存泄漏
