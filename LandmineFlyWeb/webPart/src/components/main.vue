@@ -8,6 +8,8 @@ import main_background_url from "@/assets/images/ksm_AI2X.webp";
 import logo_url from "@/assets/images/icon_1_light_AI2X.webp";
 
 import { timeMessage } from "@/data/timeMessage.js";
+// 调试：使用固定的天气信息，避免启动后端
+import { weatherData } from "@/data/weatherData_temp";
 
 /*
  * 调试：要想跳过加载页面直接进入主页面，需要以下操作：
@@ -179,16 +181,27 @@ export default {
 			});
 		});
 
-		const weatherRequestPromise = axios
-			.get(
-				"http://api.weatherapi.com/v1/forecast.json?key=2b3ec309ac404d889a395235250407&q=Nanjing&days=3&aqi=yes&lang=zh"
-			)
-			.then((res) => {
-				this.weather.data = res.data;
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		// 从后端获取天气信息
+		// 百度地图API要求请求要在后端调用，不能在浏览器中调用
+		// const weatherRequestPromise = axios({
+		// 	method: "get",
+		// 	url: "/api/main/weather",
+		// 	params: {
+		// 		district_id: 320100,
+		// 		data_type: "all",
+		// 	},
+		// })
+		// 	.then((res) => {
+		// 		this.weather.data = JSON.parse(res.data.data)
+		// 		console.log(this.weather.data)
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log(err);
+		// 	});
+		// 调试：使用固定的天气信息，避免启动后端
+		const weatherRequestPromise = null;
+		this.weather.data = weatherData;
+		console.log(this.weather.data);
 
 		// 在加载页面提前加载图片资源
 		Promise.all([...imageLoadPromises, weatherRequestPromise])
@@ -392,7 +405,51 @@ export default {
 								<v-sheet
 									class="rounded-xl glass-style"
 									style="width: 95%; height: 95%"
-								></v-sheet>
+								>
+									<v-container class="fill-height">
+										<v-row no-gutters style="width: 100%; height: 60%">
+											<v-col style="width: 50%; border: 3px solid red">
+												<p
+													style="
+														font-family: 'Pacifico' !important;
+														font-size: 45px;
+														text-align: start;
+													"
+												>
+													Weather
+													<span
+														style="
+															font-weight: 300;
+															font-size: 25px;
+															text-align: start;
+														"
+													>
+														/ 天气</span
+													>
+												</p>
+												<p
+													style="
+														font-weight: 300;
+														font-size: 25px;
+														text-align: start;
+													"
+												>
+													123
+												</p>
+											</v-col>
+											<v-col style="width: 50%; border: 3px solid red"> </v-col>
+										</v-row>
+										<v-row no-gutters style="width: 100%; height: 40%">
+											<v-col style="width: 33%; border: 3px solid red"> </v-col>
+											<v-col style="width: 33%; border: 3px solid red"> </v-col>
+											<v-col style="width: 33%; border: 3px solid red"> </v-col>
+										</v-row>
+									</v-container>
+									<!-- {{ weather.data.result.now.text }}
+									<svg class="icon" aria-hidden="true">
+										<use xlink:href="#icon-daxue"></use>
+									</svg> -->
+								</v-sheet>
 							</v-col>
 						</v-row>
 						<v-row

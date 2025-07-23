@@ -14,14 +14,14 @@ export default defineConfig({
 		},
 	},
 	//服务器代理，开发环境使用
-	// server: {
-	// 	host: true,
-	// 	proxy: {
-	// 		"/api": {
-	// 			target: "http://localhost:8080",
-	// 			rewrite: (path) => path.replace(/^\/api/, ""),
-	// 			changeOrigin: true,
-	// 		},
-	// 	},
-	// },
+	server: {
+		host: true,
+		proxy: {
+			"/api": {
+				target: "http://localhost:8080",
+				rewrite: (path) => path.replace(/^\/api/, ""),
+				changeOrigin: true,
+			},
+		},
+	},
 });
